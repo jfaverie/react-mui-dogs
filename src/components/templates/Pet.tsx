@@ -18,8 +18,8 @@ const Pet = ({
 }) => {
   const [dogList, setDogList] = useState<string[]>([])
   const [currentPetBreed, setCurrentDogBreed] = useState<string>("doberman")
-  const [petCountChoices, setDogCountChoices] = useState<number[]>([])
-  const [petColumnChoices, setDogColumnChoices] = useState<number[]>([])
+  const [maxCountChoices, setMaxCountChoices] = useState<number[]>([])
+  const [maxColoumnChoice, setMaxCoulumnChoices] = useState<number[]>([])
   const [countChoice, setCountChoice] = useState<number>(5)
   const [columnChoice, setColumnChoice] = useState<number>(5)
   const [petImageUrl, setDogImageUrl] = useState("")
@@ -50,12 +50,12 @@ const Pet = ({
   
           const images = await getAllImageByBreed(petName,currentPetBreed);
           const imagesNumberList = numberList(images.length);
-          setDogCountChoices(imagesNumberList);
+          setMaxCountChoices(imagesNumberList);
   
           if (countChoice) {
             const imagesCurrentBreed = await getAllImageByBreed(petName,currentPetBreed, countChoice);
             setImagesCurrentBreed(imagesCurrentBreed);
-            setDogColumnChoices(numberList(imagesCurrentBreed.length));
+            setMaxCoulumnChoices(numberList(imagesCurrentBreed.length));
           }
         } catch (error) {
           console.log({ error });
@@ -92,12 +92,12 @@ const Pet = ({
   return (
     <main className="pet">
       <NavBar handleClickBtn={()=>setShowFavoritesPetList(!showFavoritesPetList)}/>
-      <Container className="pet_container">
+      <Container className="petcontainer">
         <h1>Choose your {petName}</h1>
         <div className="pet_head">
           <div className="pet_head_dropdowns">
             <Dropdown
-              onChange={(value : string) => { console.log({value}),setCurrentDogBreed(value)}}
+              onChange={(value : string) => setCurrentDogBreed(value)}
               label={`Choose a ${petName}`}
               values={dogList}
               currentValue={currentPetBreed}
@@ -105,13 +105,13 @@ const Pet = ({
             <Dropdown
               onChange={(value: number) => setCountChoice(value)}
               label={`How many ${petName}s`}
-              values={petCountChoices}
+              values={maxCountChoices}
               currentValue={countChoice ?? ""}
             />
             <Dropdown
               onChange={(value: number) => setColumnChoice(value)}           
               label="How many columns"
-              values={petColumnChoices}
+              values={maxColoumnChoice}
               currentValue={columnChoice ?? ""}
             />
           </div>
