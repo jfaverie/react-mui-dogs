@@ -4,6 +4,7 @@ const DogPage = () => {
     return (
         <Pet
             petName="Dog"
+            
         />
     )
 }

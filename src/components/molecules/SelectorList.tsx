@@ -1,5 +1,5 @@
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import SelectorOption from "../atoms/SelectorOption"
+import { MenuItem } from "@mui/material";
 
 const SelectorList = ({
     options=[],
@@ -18,7 +18,9 @@ const SelectorList = ({
     return (
         <Select value={currentValue.toString()} label={label} onChange={handleChange}>
             {[...options].map((value) => (
-                <SelectorOption option={value}/>
+                <MenuItem key={value} value={value}>
+                   {value}
+                 </MenuItem>
           ))}
         </Select>
     )

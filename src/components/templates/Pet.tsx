@@ -4,6 +4,8 @@ import DogCard from "../organisms/DogCard";
 import DogList from "../molecules/DogList";
 
 import "../../styles.css"
+import { useEffect, useState } from "react";
+import { getAllBreeds, getAllImageByBreed, getImageRandomByBreed } from "../../services/breedApiHandler";
 
 const dogBreedlist = ["labrador"];
 
@@ -27,7 +29,50 @@ const Pet = ({
 }: {
     petName:string
 }) => {
-  const defaultDogBreed = "australianshepard";
+  const [dogList, setDogList] = useState<string[]>([])
+  const [currentDogBreed, setCurrentDogBreed] = useState<string>("doberman")
+  const [dogCountChoices, setDogCountChoices] = useState<number[]>([])
+  const [dogColumnChoices, setDogColumnChoices] = useState<number[]>([])
+  const [countChoice, setCountChoice] = useState<number>(5)
+  const [columnChoice, setColumnChoice] = useState<number>(5)
+  const [dogImageUrl, setDogImageUrl] = useState("")
+  const [imagesCurrentBreed, setImagesCurrentBreed] = useState<string[]>([])
+
+  const numberList = (n: number) => {
+    return [...Array(n)].map((_, i) => i + 1);
+  }
+  
+
+  useEffect(()=>{
+    getAllBreeds().then(allbreeds=> setDogList(allbreeds))
+  }, [])
+
+
+  useEffect(() => {
+    const fetchDogData = async () => {
+      if (currentDogBreed) {
+        try {
+          const url = await getImageRandomByBreed(currentDogBreed);
+          setDogImageUrl(url);
+  
+          const images = await getAllImageByBreed(currentDogBreed);
+          const imagesNumberList = numberList(images.length);
+          setDogCountChoices(imagesNumberList);
+  
+          if (countChoice) {
+            const imagesCurrentBreed = await getAllImageByBreed(currentDogBreed, countChoice);
+            setImagesCurrentBreed(imagesCurrentBreed);
+            setDogColumnChoices(numberList(imagesCurrentBreed.length));
+          }
+        } catch (error) {
+          console.log({ error });
+        }
+      }
+    };
+  
+    // Appeler la fonction asynchrone définie ci-dessus
+    fetchDogData();
+  }, [currentDogBreed, countChoice]);
 
   return (
     <main className="pet">
@@ -36,32 +81,31 @@ const Pet = ({
         <div className="pet_head">
           <div className="pet_head_dropdowns">
             <Dropdown
-              onChange={() => console.log("click")}
-              label="Label 1"
-              values={dogBreedlist}
-              currentValue=""
+              onChange={(value : string) => { console.log({value}),setCurrentDogBreed(value)}}
+              label={`Choose a ${petName}`}
+              values={dogList}
+              currentValue={currentDogBreed}
             />
             <Dropdown
-              onChange={() => console.log("click")}
-              label="Label 2"
-              values={
-                dogCountChoices}
-              currentValue=""
+              onChange={(value: number) => setCountChoice(value)}
+              label={`How many ${petName}s`}
+              values={dogCountChoices}
+              currentValue={countChoice ?? ""}
             />
             <Dropdown
-              onChange={() => console.log("click")}
-              label="Label 3"
-              values={columnChoices}
-              currentValue=""
+              onChange={(value: number) => setColumnChoice(value)}           
+              label="How many columns"
+              values={dogColumnChoices}
+              currentValue={columnChoice ?? ""}
             />
           </div>
           <DogCard
             url={dogImageUrl}
-            alt={defaultDogBreed}
-            text={defaultDogBreed}
+            alt={currentDogBreed}
+            text={currentDogBreed}
           />
         </div>
-        <DogList itemData={dogList} cols={2} />
+        <DogList itemData={imagesCurrentBreed} cols={columnChoice} />
       </Container>
     </main>
   );
