@@ -3,6 +3,11 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import SelectorOption from "../atoms/SelectorOption";
+import SelectorList from "../molecules/SelectorList";
+import Label from "../atoms/input/Label";
+
+
 
 export default function Dropdown({
   onChange,
@@ -21,14 +26,8 @@ export default function Dropdown({
   return (
     <Box sx={{ paddingBlockEnd: 2 }}>
       <FormControl fullWidth>
-        <InputLabel>{label}</InputLabel>
-        <Select value={currentValue.toString()} label={label} onChange={handleChange}>
-          {[...values].map((value) => (
-            <MenuItem key={value} value={value}>
-              {value}
-            </MenuItem>
-          ))}
-        </Select>
+        <Label label={label}/>
+        <SelectorList options={values} currentValue={currentValue} label={label} onChange={handleChange} />
       </FormControl>
     </Box>
   );

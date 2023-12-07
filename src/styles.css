@@ -1,13 +1,13 @@
-.App {
+.pet {
   font-family: sans-serif;
   text-align: center;
 }
 
-.App_head {
+.pet_head {
   display: flex;
 }
 
-.App_head_dropdowns {
+.pet_head_dropdowns {
   flex: 1;
   margin-right: 12px;
 }
