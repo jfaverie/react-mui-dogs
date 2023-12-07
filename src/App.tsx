@@ -33,19 +33,19 @@ const App = () => {
         <div className="App_head">
           <div className="App_head_dropdowns">
             <Dropdown
-              onChange={(event) => event}
+              onChange={() => console.log("click")}
               label="Label 1"
               values={dogBreedlist}
               currentValue=""
             />
             <Dropdown
-              onChange={(event) => event}
+              onChange={() => console.log("click")}
               label="Label 2"
               values={dogCountChoices}
               currentValue=""
             />
             <Dropdown
-              onChange={(event) => event}
+              onChange={() => console.log("click")}
               label="Label 3"
               values={columnChoices}
               currentValue=""

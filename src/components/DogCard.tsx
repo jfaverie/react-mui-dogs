@@ -3,7 +3,14 @@ import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-export default function DogCard({ url, alt, text }) {
+export default function DogCard({
+   url, alt, text 
+  }: {
+    url: string,
+    alt: string,
+    text: string
+  }
+  ) {
   return (
     <Card sx={{ width: 400 }}>
       <CardMedia component="img" height={300} image={url} alt={alt} />
