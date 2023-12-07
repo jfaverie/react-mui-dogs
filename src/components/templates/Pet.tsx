@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getAllBreeds, getAllImageByBreed, getImageRandomByBreed } from "../../services/breedApiHandler";
 import FavoritesPetList from "../molecules/FavoritePetList";
 import FavoritesPetContainer from "../organisms/FavoritesPetsContainer";
+import NavBar from "../organisms/Navbar";
 
 const Pet = ({
     petName,
@@ -24,6 +25,7 @@ const Pet = ({
   const [petImageUrl, setDogImageUrl] = useState("")
   const [imagesCurrentBreed, setImagesCurrentBreed] = useState<string[]>([])
   const [favoritesPets, setFavoritesPets] = useState<string[]>([])
+  const [showFavoritesPetList, setShowFavoritesPetList] = useState(false)
 
   const numberList = (n: number) => {
     return [...Array(n)].map((_, i) => i + 1);
@@ -89,7 +91,8 @@ const Pet = ({
 
   return (
     <main className="pet">
-      <Container>
+      <NavBar handleClickBtn={()=>setShowFavoritesPetList(!showFavoritesPetList)}/>
+      <Container className="pet_container">
         <h1>Choose your {petName}</h1>
         <div className="pet_head">
           <div className="pet_head_dropdowns">
@@ -125,6 +128,7 @@ const Pet = ({
             petName={petName}
             favoritePets={favoritesPets}
             onPetSelect={setCurrentDogBreed}
+            showFavoritesPetsList={showFavoritesPetList}
         />
       </Container>
     </main>
