@@ -6,37 +6,24 @@ import DogList from "../molecules/DogList";
 import "../../styles.css"
 import { useEffect, useState } from "react";
 import { getAllBreeds, getAllImageByBreed, getImageRandomByBreed } from "../../services/breedApiHandler";
-
-const dogBreedlist = ["labrador"];
-
-const dogCountChoices = [5];
-
-const columnChoices = [1];
-
-const dogImageUrl =
-  "https://images.dog.ceo/breeds/bullterrier-staffordshire/n02093256_4972.jpg";
-
-const dogList = [
-  dogImageUrl,
-  dogImageUrl,
-  dogImageUrl,
-  dogImageUrl,
-  dogImageUrl
-];
+import FavoritesPetList from "../molecules/FavoritePetList";
+import FavoritesPetContainer from "../organisms/FavoritesPetsContainer";
 
 const Pet = ({
     petName,
 }: {
     petName:string
+
 }) => {
   const [dogList, setDogList] = useState<string[]>([])
-  const [currentDogBreed, setCurrentDogBreed] = useState<string>("doberman")
-  const [dogCountChoices, setDogCountChoices] = useState<number[]>([])
-  const [dogColumnChoices, setDogColumnChoices] = useState<number[]>([])
+  const [currentPetBreed, setCurrentDogBreed] = useState<string>("doberman")
+  const [petCountChoices, setDogCountChoices] = useState<number[]>([])
+  const [petColumnChoices, setDogColumnChoices] = useState<number[]>([])
   const [countChoice, setCountChoice] = useState<number>(5)
   const [columnChoice, setColumnChoice] = useState<number>(5)
-  const [dogImageUrl, setDogImageUrl] = useState("")
+  const [petImageUrl, setDogImageUrl] = useState("")
   const [imagesCurrentBreed, setImagesCurrentBreed] = useState<string[]>([])
+  const [favoritesPets, setFavoritesPets] = useState<string[]>([])
 
   const numberList = (n: number) => {
     return [...Array(n)].map((_, i) => i + 1);
@@ -44,24 +31,27 @@ const Pet = ({
   
 
   useEffect(()=>{
-    console.log("HOOOO")
     getAllBreeds(petName).then(allbreeds=> setDogList(allbreeds))
+    const favDogs  =  localStorage.getItem("favoritesDogs")
+    if(favDogs){
+      setFavoritesPets(JSON.parse(favDogs))
+    }
   }, [])
 
 
   useEffect(() => {
-    const fetchDogData = async () => {
-      if (currentDogBreed) {
+    const fetchPetData = async () => {
+      if (currentPetBreed) {
         try {
-          const url = await getImageRandomByBreed(petName,currentDogBreed);
+          const url = await getImageRandomByBreed(petName,currentPetBreed);
           setDogImageUrl(url);
   
-          const images = await getAllImageByBreed(petName,currentDogBreed);
+          const images = await getAllImageByBreed(petName,currentPetBreed);
           const imagesNumberList = numberList(images.length);
           setDogCountChoices(imagesNumberList);
   
           if (countChoice) {
-            const imagesCurrentBreed = await getAllImageByBreed(petName,currentDogBreed, countChoice);
+            const imagesCurrentBreed = await getAllImageByBreed(petName,currentPetBreed, countChoice);
             setImagesCurrentBreed(imagesCurrentBreed);
             setDogColumnChoices(numberList(imagesCurrentBreed.length));
           }
@@ -72,8 +62,30 @@ const Pet = ({
     };
   
     // Appeler la fonction asynchrone définie ci-dessus
-    fetchDogData();
-  }, [currentDogBreed, countChoice]);
+    fetchPetData();
+  }, [currentPetBreed, countChoice]);
+
+  const toggleFavoriteDog = () => {
+    if(currentPetBreed){
+      const favoritesDogsCopy = [...favoritesPets]
+      const index = favoritesDogsCopy.indexOf(currentPetBreed)
+      if(index === -1){
+        favoritesDogsCopy.push(currentPetBreed)
+      }
+      else {
+        favoritesDogsCopy.splice(index, 1)
+      }
+  
+      setFavoritesPets(favoritesDogsCopy)
+
+      localStorage.setItem("favoritesDogs", JSON.stringify(favoritesDogsCopy))
+
+      console.log({favoritesDogsCopy, index})
+    }
+    else{
+      console.log("Select a dog breed")
+    }
+  }
 
   return (
     <main className="pet">
@@ -85,28 +97,35 @@ const Pet = ({
               onChange={(value : string) => { console.log({value}),setCurrentDogBreed(value)}}
               label={`Choose a ${petName}`}
               values={dogList}
-              currentValue={currentDogBreed}
+              currentValue={currentPetBreed}
             />
             <Dropdown
               onChange={(value: number) => setCountChoice(value)}
               label={`How many ${petName}s`}
-              values={dogCountChoices}
+              values={petCountChoices}
               currentValue={countChoice ?? ""}
             />
             <Dropdown
               onChange={(value: number) => setColumnChoice(value)}           
               label="How many columns"
-              values={dogColumnChoices}
+              values={petColumnChoices}
               currentValue={columnChoice ?? ""}
             />
           </div>
           <DogCard
-            url={dogImageUrl}
-            alt={currentDogBreed}
-            text={currentDogBreed}
+            url={petImageUrl}
+            alt={currentPetBreed}
+            text={currentPetBreed}
+            handleClickFavoriteBtn={toggleFavoriteDog}
+            isBreedFavorite={favoritesPets.indexOf(currentPetBreed) !== -1}
           />
         </div>
         <DogList itemData={imagesCurrentBreed} cols={columnChoice} />
+        <FavoritesPetContainer 
+            petName={petName}
+            favoritePets={favoritesPets}
+            onPetSelect={setCurrentDogBreed}
+        />
       </Container>
     </main>
   );

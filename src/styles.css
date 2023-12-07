@@ -11,3 +11,22 @@
   flex: 1;
   margin-right: 12px;
 }
+
+.btn.favoriteBtn {
+  color: inherit;
+  transition: all ease-in-out 0.35s;
+}
+
+.btn.favoriteBtn:hover {
+  color: #ff0000;
+
+}
+
+.btn.favoriteBtn.clicked {
+  color: #ff0000;
+}
+
+.btn.favoriteBtn.clicked:hover {
+  color: inherit;
+}
+
