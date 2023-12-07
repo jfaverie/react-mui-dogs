@@ -44,7 +44,8 @@ const Pet = ({
   
 
   useEffect(()=>{
-    getAllBreeds().then(allbreeds=> setDogList(allbreeds))
+    console.log("HOOOO")
+    getAllBreeds(petName).then(allbreeds=> setDogList(allbreeds))
   }, [])
 
 
@@ -52,15 +53,15 @@ const Pet = ({
     const fetchDogData = async () => {
       if (currentDogBreed) {
         try {
-          const url = await getImageRandomByBreed(currentDogBreed);
+          const url = await getImageRandomByBreed(petName,currentDogBreed);
           setDogImageUrl(url);
   
-          const images = await getAllImageByBreed(currentDogBreed);
+          const images = await getAllImageByBreed(petName,currentDogBreed);
           const imagesNumberList = numberList(images.length);
           setDogCountChoices(imagesNumberList);
   
           if (countChoice) {
-            const imagesCurrentBreed = await getAllImageByBreed(currentDogBreed, countChoice);
+            const imagesCurrentBreed = await getAllImageByBreed(petName,currentDogBreed, countChoice);
             setImagesCurrentBreed(imagesCurrentBreed);
             setDogColumnChoices(numberList(imagesCurrentBreed.length));
           }
